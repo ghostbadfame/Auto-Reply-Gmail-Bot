@@ -7,10 +7,11 @@ const PORT = 3000;
 
 const CLIENT_ID = process.env.CLIENTID;
 const CLIENT_SECRET = process.env.CLIENTSECRET;
-const REDIRECT_URI = "http://localhost:3000/auth/callback";
+const REDIRECT_URI = process.env.REDIRECTURI;
+const REFRESH_TOKEN = process.env.REFRESHTOKEN;
 
 const oAuth2Client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
-
+oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 const SCOPES = [
   'https://www.googleapis.com/auth/gmail.readonly',
   'https://www.googleapis.com/auth/gmail.send',
@@ -20,6 +21,7 @@ const SCOPES = [
 // keep track of users already replied to using repliedUsers
 const repliedUsers = new Set();
 
+// Step 1 : Login with API
 app.get('/', (req, res) => {
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: 'offline',
@@ -51,7 +53,7 @@ app.get('/send-replies', async (req, res) => {
   }
 });
 
-// Step 1. check for new emails and send replies.
+// Step 2. check for new emails and send replies send replies to Emails that have no prior replies.
 async function sendReplies() {
   try {
     const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
@@ -100,7 +102,6 @@ async function sendReplies() {
           continue;
         }
 
-        // 2. send replies to Emails that have no prior replies
         // Check if the email has any replies.
         const thread = await gmail.users.threads.get({
           userId: "me",
@@ -152,7 +153,7 @@ async function createReplyRaw(from, to, subject) {
   return base64EncodedEmail;
 }
 
-// 3. add a Label to the email and move the email to the label
+// 3. Add a Label to the email and move the email to the label
 async function createLabel(labelName) {
   try {
     const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
