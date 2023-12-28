@@ -1,15 +1,16 @@
 
-'''Auto Reply Gmail Bot using Node.js'''
-#Description
-This repository contains the source code for the Auto_reply_gmail_api_app developed using Node.js and Google APIs. The application is designed to automatically respond to emails in your Gmail mailbox while you are away on vacation.
+_****Auto Reply Gmail Bot using Node.js****_
+**Description**
+This repository contains the code for openinapp assignment developed using Node.js and Google APIs. The application is designed to automatically respond to emails in your Gmail mailbox while you are busy.
 
-Features
+**Features**
 Node.js clusters support.
 Checks for new emails in a specified Gmail ID.
 Sends replies to emails without prior responses.
 Adds a label to the email and moves it to the labeled folder.
 Periodically performs the above steps within a random time interval ranging from 45 to 120 seconds.
-Libraries
+
+**Libraries**
 googleapis: This package is imported from the googleapis module, providing essential functionality to interact with various Google APIs, including the Gmail API.
 OAuth2: The OAuth2 class from the google.auth module is utilized to authenticate the application and obtain an access token for making requests to the Gmail API. It handles token refresh and retrying requests if necessary.
 
